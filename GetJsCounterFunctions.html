@@ -10,14 +10,14 @@
 	 * @returns {string} - The formatted number.
 	 */
 	function formatNumber(num, spacer = ' ') {
-      let startIndex = num.indexOf('.');
-      if (startIndex === -1) startIndex = num.length;
-        while(startIndex > 3){
-          startIndex -= 3;
-        	num = num.slice(0, startIndex) + " " + num.slice(startIndex);
-        }
-      return num;
-    };
+	      let startIndex = num.indexOf('.');
+	      if (startIndex === -1) startIndex = num.length;
+	        while(startIndex > 3){
+	          startIndex -= 3;
+	        	num = num.slice(0, startIndex) + " " + num.slice(startIndex);
+	        }
+	      return num;
+    	};
 	/**
 	 * @param {string} number - Number with deleted decimals
 	 * @returns {string} - Number without decimals
@@ -39,39 +39,34 @@
 	 * @param {number} options.roundNum - Number of decimal places to round the counter value (default is 2).
 	 */
 	function counterAnimation(counter, to, options = {}){
-        const from = options['from'] || 0;
-        const step = to / 100;
-        const speed = options['speed'] || 10; // ms
+	        const from = options['from'] || 0;
+	        const step = to / 100;
+	        const speed = options['speed'] || 10; // ms
 		const before = options['before'] || '';
 		const after = options['after'] || '';
 		const roundNum = options['roundNum'] == undefined ? 2 : options['roundNum'];
 		const formatNumFunc = roundNum === 0 ? (num) => deleteDecimals(num.toString()) : (num) => Number(num).toFixed(roundNum).toString();
-        // Counter:
-        let itvCounts = null;
-        let curr = from;
-		
+	        // Counter:
+	        let itvCounts = null;
+	        let curr = from;
+			
 		/**
 		* Updates the counter value and performs the animation.
 		*/
-        const updateCounter = () => {
-
-          curr += step;
-
-          if (curr >= to) {
-            clearInterval(itvCounts);
-            counter.innerHTML = before + formatNumber(to.toString()) + after;
-          }
+	        const updateCounter = () => {
+		  curr += step;
+	          if (curr >= to) {
+	            clearInterval(itvCounts);
+	            counter.innerHTML = before + formatNumber(to.toString()) + after;
+	          }
 		  else{
 			  counter.innerHTML = before + formatNumFunc(curr) + after;
 		  }
-
-
-        };
-
-        // Initialize the animation:
-        itvCounts = setInterval(updateCounter, speed);
-		}
-    
+	        };
+	
+	        // Initialize the animation:
+	        itvCounts = setInterval(updateCounter, speed);
+	}
 	/**
 	 * Factory function that creates an observer to execute the animation once when an element is intersected.
 	 *
