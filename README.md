@@ -1,2 +1,2 @@
 # WordpressCodeSnippets
-This repo contains some useful code snippets I used to develop websites
+This repo contains useful code snippets I used to develop websites
