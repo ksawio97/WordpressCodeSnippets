@@ -1,0 +1,92 @@
+<!-- Code defines functions for animating a counter on an HTML element with customizable options, including formatting and rounding the displayed numbers. Additionally, it includes a factory function that creates an observer to trigger the animation when the specified element becomes visible, ensuring the animation occurs only once. -->
+
+<pre>
+<script>
+	/**
+	 * Formats a number by adding a space every three digits before the decimal point.
+	 *
+	 * @param {string} num - The number to be formatted as a string.
+	 * @param {string} spacer - The spacer that's added every three digits before the decimal point (default is ' ').
+	 * @returns {string} - The formatted number.
+	 */
+	function formatNumber(num, spacer = ' ') {
+      let startIndex = num.indexOf('.');
+      if (startIndex === -1) startIndex = num.length;
+        while(startIndex > 3){
+          startIndex -= 3;
+        	num = num.slice(0, startIndex) + " " + num.slice(startIndex);
+        }
+      return num;
+    };
+	/**
+	 * @param {string} number - Number with deleted decimals
+	 * @returns {string} - Number without decimals
+	 */
+	function deleteDecimals(number) {
+		const dotIndex = number.indexOf('.');
+		return number.substring(0, dotIndex);
+	}
+	/**
+	 * Animates a counter from a specified starting value to a target value.
+	 *
+	 * @param {HTMLElement} counter - The HTML element where the counter animation will be displayed.
+	 * @param {number} to - The target value to which the counter should animate.
+	 * @param {Object} options - Additional options for the counter animation.
+	 * @param {number} options.from - The starting value of the counter animation (default is 0).
+	 * @param {number} options.speed - The interval speed in milliseconds for updating the counter (default is 10ms).
+	 * @param {string} options.before - Text to be displayed before the counter value.
+	 * @param {string} options.after - Text to be displayed after the counter value.
+	 * @param {number} options.roundNum - Number of decimal places to round the counter value (default is 2).
+	 */
+	function counterAnimation(counter, to, options = {}){
+        const from = options['from'] || 0;
+        const step = to / 100;
+        const speed = options['speed'] || 10; // ms
+		const before = options['before'] || '';
+		const after = options['after'] || '';
+		const roundNum = options['roundNum'] == undefined ? 2 : options['roundNum'];
+		const formatNumFunc = roundNum === 0 ? (num) => deleteDecimals(num.toString()) : (num) => Number(num).toFixed(roundNum).toString();
+        // Counter:
+        let itvCounts = null;
+        let curr = from;
+		
+		/**
+		* Updates the counter value and performs the animation.
+		*/
+        const updateCounter = () => {
+
+          curr += step;
+
+          if (curr >= to) {
+            clearInterval(itvCounts);
+            counter.innerHTML = before + formatNumber(to.toString()) + after;
+          }
+		  else{
+			  counter.innerHTML = before + formatNumFunc(curr) + after;
+		  }
+
+
+        };
+
+        // Initialize the animation:
+        itvCounts = setInterval(updateCounter, speed);
+		}
+    
+	/**
+	 * Factory function that creates an observer to execute the animation once when an element is intersected.
+	 *
+	 * @param {...*} args - Arguments to be passed to the counterAnimation function.
+	 * @returns {IntersectionObserver} - The created IntersectionObserver instance.
+	 */
+    function ObserverAnimationExecuteOnceFactory(...args)
+    {
+      let lock = false;
+      return new IntersectionObserver(function(entries) {
+        if(!lock && entries[0].isIntersecting) {
+          counterAnimation(...args);
+          lock = true;
+        }
+      },{ threshold: [0] });
+    }
+</script>
+</pre>
